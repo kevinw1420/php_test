@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+   nginx:
+      image: nginx:latest
+      ports:
+         - 80:80
+         - 443:80
+      volumes:
+         - ./compose/nginx/nginx.conf:/etc/nginx/conf.d/default.conf # config
+         - ./app:/var/www/html/smartCloud # main app
+         - ./compose/nginx/log:/var/log/nginx # log
+      depends_on:
+         - php
+
+   php:
+      build: ./compose/php
+      volumes:
+         - ./app:/var/www/html/smartCloud
+
+   db:
+      build: ./compose/mysql
+      environment:
+         - MYSQL_ROOT_PASSWORD=P@ssw0rd 
+         - MYSQL_DATABASE=smartCloud
+         - MYSQL_USER=kevin 
+         - MYSQL_PASSWORD=P@ssw0rd
+         - TZ=Asia/Taipei
+ 
+      volumes:
+         - ./compose/mysql/data:/var/lib/mysql
+         - ./compose/mysql/conf/my.cnf:/etc/mysql/my.cnf
+         - ./compose/mysql/init:/docker-entrypoint-initdb.d/ 
+         - ./compose/mysql/log:/var/log/mysql
+         - ./compose/mysql/backup:/backup
+         - ./compose/mysql/test_data:/test_data
+         - ./compose/mysql/init_script:/init_script
+
+      ports:
+         - "3306:3306" 
+      restart: always
+
+   phpmyadmin:
+      image: phpmyadmin/phpmyadmin:latest
+      ports:
+         - 8080:80
+      depends_on:
+         - db
