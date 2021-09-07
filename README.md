@@ -1,6 +1,6 @@
 # php_test
 1. git clone sample database repo
-2. copy all sample database files to ./compose/mysql/test_data
+2. copy all sample database files(test_db) to ./compose/mysql/test_data
 3. docker-compose up -d at docker-compose.yaml file path
 4. /bin/bash import_data.sh(or exec [docker exec php_test_db_1 /bin/bash /init_script/init.sh] at command line)
 5. visit http://localhost:80/helloWorld
